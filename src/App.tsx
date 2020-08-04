@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import Liff from '@line/liff'
 
 function App() {
+  const [profile, setProfile] = useState<any>()
+  useEffect(() => {
+    Liff.init({ liffId: '1653573972-GMOV2QQK' }, () => {
+      if (!Liff.isLoggedIn()) {
+        Liff.login()
+        return
+      }
+      Liff.getProfile().then((data) => {
+        setProfile(data)
+      })
+    })
+  }, [])
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        Line user profile: <br />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          <img src={profile?.pictureUrl} style={{ width: 40, height: 40, borderRadius: '50%' }} alt="pic" />
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>userId: {profile?.userId}</p>
+        <p>userName: {profile?.displayName}</p>
+        status: {profile?.statusMessage}
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
